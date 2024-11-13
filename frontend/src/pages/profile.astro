@@ -1,0 +1,31 @@
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro</title>
+	</head>
+	<body>
+		<div class="container hidden">
+            <header>
+                <nav>
+                    <a href="">log out</a>
+                </nav>
+            </header>
+            <main>
+                <h1>My profile</h1>
+                <input type="search">
+                <button class="add-btn">+</button>
+            </main>
+        </div>
+        <script>
+            const addBtn = document.querySelector(".add-btn") as HTMLButtonElement
+
+            addBtn.addEventListener("click", (e) => {
+                const overlay = document.createElement("div")
+                
+            })
+        </script>
+	</body>
+</html>

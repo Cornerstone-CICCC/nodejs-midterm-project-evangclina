@@ -1,0 +1,57 @@
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro</title>
+	</head>
+	<body>
+		<h1>Create an account</h1>
+        <form>
+            <label for="firstname">First Name</label>
+            <input type="text" name="firstname" id="firstname" required autocomplete="off" placeholder="First name">
+
+            <label for="lastname">Last Name</label>
+            <input type="text" name="lastname" id="lastname" required autocomplete="off" placeholder="First name">
+
+            <label for="email">Email address</label>
+            <input type="email" name="email" id="email" required placeholder="Email">
+
+            <label for="username">Username</label>
+            <input type="text" name="username" id="username" required autocomplete="off" placeholder="Username">
+
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" required autocomplete="off" placeholder="Password">
+        
+            <button>Create account</button>
+        </form>
+        <p>Already have an account? <a href="/login">log in</a></p>
+        <script>
+            const form = document.querySelector("form") as HTMLFormElement
+
+            form.addEventListener("submit", async(e) => {
+                e.preventDefault()
+                const formData = new FormData(form)
+                const res = await fetch(`http://localhost:4100/users/register`, {
+                    method: "POST", 
+                    headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify({
+                        email: formData.get("email"),
+                        firstname: formData.get("firstname"), 
+                        lastname: formData.get("lastname"),
+						username: formData.get('username'),
+						password: formData.get('password')
+					})
+                })
+                const data = await res.json()
+                console.log(data)
+                if(res.ok){
+                    window.location.href = "/login"
+                }
+            })
+        </script>
+	</body>
+</html>
