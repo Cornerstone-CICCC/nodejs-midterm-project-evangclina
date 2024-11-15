@@ -20,21 +20,21 @@ const getDreamById = (req: Request<{ id: string }>, res: Response) => {
 
 const addDream = (req: Request<{}, {}, Omit<Dream, "id">>, res: Response) => {
     const { userId } = req.session
-    const { title, content } = req.body
+    const { title, content, date } = req.body
     if(!title || !content){
         res.status(400).json({ message:"Missing title or user id" })
         return
     }
-    const dream = dreamModel.create({ title, content, userId })
+    const dream = dreamModel.create({ title, content, date, userId })
     res.status(201).json(dream)
 }
 
 const updateDreamById = (req: Request<{ id: string }>, res: Response) => {
     const { userId } = req.session
     const { id } = req.params
-    const { title, content } = req.body
+    const { title, content, date  } = req.body
 
-    const dream = dreamModel.edit( id, { title, content, userId })
+    const dream = dreamModel.edit( id, { title, content, date, userId })
 
     if(!dream){
         res.status(404).json({ message: "Dream not found" })

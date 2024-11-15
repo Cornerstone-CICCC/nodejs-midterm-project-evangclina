@@ -29,7 +29,7 @@ app.use(express_1.default.urlencoded({ extended: true }));
 app.use("/users", user_routes_1.default);
 app.use("/dreams", dream_routes_1.default);
 app.use((req, res) => {
-    res.status(404).send("Invalid Route");
+    res.status(404).json({ message: "Invalid Route" });
 });
 // start server
 const PORT = Number(process.env.PORT || 3000);

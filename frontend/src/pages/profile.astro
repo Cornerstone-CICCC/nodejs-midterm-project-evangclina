@@ -1,3 +1,6 @@
+---
+import "../styles/global.css"
+---
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
@@ -10,22 +13,192 @@
 		<div class="container hidden">
             <header>
                 <nav>
-                    <a href="">log out</a>
+                    <button class="logout-btn">log out</button>
                 </nav>
             </header>
             <main>
                 <h1>My profile</h1>
                 <input type="search">
                 <button class="add-btn">+</button>
+                <div class="dreams">
+                    <!-- All dreams logged will be here -->
+                </div>
+
+                <div class="overlay hidden">
+                    <div class="modal">
+                        <h3>What was your dream about?</h3>
+                        <form>
+                            <label for="title">Title</label>
+                            <input type="text" name="title" id="title" required autocomplete="off" placeholder="title">
+
+                            <label for="content">Description</label>
+                            <input type="text" name="content" id="content" required autocomplete="off" placeholder="description">
+
+                            <label for="date">Date</label>
+                            <input type="date" name="date" id="date" required>
+
+                            <button>log dream</button>
+                        </form>
+                        <button class="close-btn">x</button>
+                    </div>
+                </div>
             </main>
+            <style>
+                .hidden {
+                  display: none;
+                }
+            </style>
         </div>
         <script>
+
             const addBtn = document.querySelector(".add-btn") as HTMLButtonElement
+            const container = document.querySelector(".container") as HTMLDivElement
+            const logoutBtn = document.querySelector(".logout-btn") as HTMLButtonElement
+            const overlay = document.querySelector(".overlay") as HTMLDivElement
+            const contentDiv = document.querySelector(".dreams") as HTMLDivElement
+            const form = document.querySelector("form") as HTMLFormElement
+
+            logoutBtn.addEventListener("click", async(e) => {
+                await fetch(`http://localhost:4100/users/logout`, {
+                    credentials: 'include'
+                })
+                window.location.href = "/"
+            })
+
+            type Dream = {
+                id: string, 
+                title: string, 
+                content: string,
+                date: string, 
+                userId: string
+            }
+
+            const fetchDreams = async (): Promise<[]> => {
+                const res = await fetch(`http://localhost:4100/dreams`, {
+                    credentials: 'include'
+                })
+                const data = await res.json()
+                return data
+            }
+
+            const buildList = async(): Promise<void> => {
+                const dreams: Dream[] = await fetchDreams()
+                contentDiv.innerHTML = ""
+                dreams.forEach(dream => {
+                    const dr = document.createElement("div")
+                    dr.classList.add("dream")
+                    dr.innerHTML= `
+                        <div class="${dream.id}">
+                            <p>${dream.date}</p>
+                        </div>
+                        <h3>${dream.title}</h3>
+                        <p>${dream.content}</p>
+
+                        <button class="delete-btn">trash</button>
+                        <button class="edit-btn">edit</button>
+                    `
+                    contentDiv.appendChild(dr)
+
+                    const deleteBtn = dr.querySelector(".delete-btn") as HTMLButtonElement
+                    const editBtn = dr.querySelector(".edit-btn") as HTMLButtonElement
+
+                    deleteBtn.addEventListener("click", async(e) => {
+
+                        //create are you sure you want to delete modal 
+                        const res = await fetch(`http://localhost:4100/dreams/delete/${dream.id}`, {
+                            method: "DELETE", 
+                            credentials: "include"
+                        })
+                        if(res.ok){
+                            dr.remove()
+                        }
+                    })
+
+                    editBtn.addEventListener("click", async(e) => {
+                        const overlay = document.createElement("div")
+                        overlay.classList.add("overlay")
+                        overlay.innerHTML= `
+                            <div class="modal">
+                                <form class="edit-form">
+                                    <label for="title">New title</label>
+                                    <input value="${dream.title}" type="text" name="title" id="title">
+
+                                    <label for="content">New content</label>
+                                    <input type="text" value="${dream.content}" name="content" id="content">
+
+                                    <label for="date">New content</label>
+                                    <input type="date" value="${dream.date}" name="date" id="date">
+                                    
+                                    <button>save changes</button>
+                                    <button class="close">x</button>
+                                </form>
+                            </div>
+                        `
+                        container.append(overlay)
+
+                        const editForm = overlay.querySelector(".edit-form") as HTMLFormElement
+                        editForm.addEventListener("submit", async(e) => {
+                            // e.preventDefault()
+                            const formData = new FormData(editForm)
+                            const res = await fetch(`http://localhost:4100/dreams/update/${dream.id}`, {
+                                method: "PUT", 
+                                credentials: "include", 
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify({
+                                    title: formData.get("title"), 
+                                    content: formData.get("content"),
+                                    date: formData.get("date")
+                                })
+                            })
+                            const data = await res.json()
+                            console.log(data)
+                        })
+                    })
+                
+                })
+            }
 
             addBtn.addEventListener("click", (e) => {
-                const overlay = document.createElement("div")
-                
+                overlay.classList.remove("hidden")
+                const closeBtn = document.querySelector(".close-btn") as HTMLButtonElement
+                closeBtn.addEventListener("click", () => {
+                    overlay.classList.add("hidden")
+                })
             })
+
+            form.addEventListener("submit", async(e) => {
+                const formData = new FormData(form)
+                const res = await fetch(`http://localhost:4100/dreams/add`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }, 
+                    credentials: "include", 
+                    body: JSON.stringify({
+                        title: formData.get("title"), 
+                        content: formData.get("content"), 
+                        date: formData.get("date")
+                    })
+                })
+                const data = await res.json()
+                buildList()
+            })
+
+            const loadProfile = async (): Promise<void> => {
+                const res = await fetch(`http://localhost:4100/users/profile`, {
+                    credentials: 'include'
+                })
+                const data = await res.json()
+                if (res.ok) {
+                    container.classList.remove('hidden')
+                    buildList()
+                } else {
+                    window.location.href = "/"
+                }
+            }
+            loadProfile()
         </script>
 	</body>
 </html>

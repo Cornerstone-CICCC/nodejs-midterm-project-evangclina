@@ -20,19 +20,19 @@ const getDreamById = (req, res) => {
 };
 const addDream = (req, res) => {
     const { userId } = req.session;
-    const { title, content } = req.body;
+    const { title, content, date } = req.body;
     if (!title || !content) {
         res.status(400).json({ message: "Missing title or user id" });
         return;
     }
-    const dream = dream_model_1.default.create({ title, content, userId });
+    const dream = dream_model_1.default.create({ title, content, date, userId });
     res.status(201).json(dream);
 };
 const updateDreamById = (req, res) => {
     const { userId } = req.session;
     const { id } = req.params;
-    const { title, content } = req.body;
-    const dream = dream_model_1.default.edit(id, { title, content, userId });
+    const { title, content, date } = req.body;
+    const dream = dream_model_1.default.edit(id, { title, content, date, userId });
     if (!dream) {
         res.status(404).json({ message: "Dream not found" });
         return;

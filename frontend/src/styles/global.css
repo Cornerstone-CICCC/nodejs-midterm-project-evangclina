@@ -1,0 +1,34 @@
+/* PROFILE MODAL */
+.overlay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: grid;
+    place-items: center;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,.8);
+}
+
+.modal {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    gap: 1rem;
+    max-width: 350px;
+    width: 100%;
+    padding: 2rem;
+    background-color: white;
+    text-align: justify;
+    border-radius: 10px;
+}
+
+.close-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+.dream{
+    border: 1px solid #bbb;
+}
