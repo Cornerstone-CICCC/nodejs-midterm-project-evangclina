@@ -4,7 +4,7 @@ import { Dream } from "../types/dream";
 
 const getDreams = (req: Request, res: Response): void => {
     const { userId } = req.session
-    const dreams = dreamModel.getAll()
+    const dreams = dreamModel.getAll(userId)
     res.json(dreams)
 }
 

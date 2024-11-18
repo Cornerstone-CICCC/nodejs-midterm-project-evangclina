@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const dream_model_1 = __importDefault(require("../models/dream.model"));
 const getDreams = (req, res) => {
     const { userId } = req.session;
-    const dreams = dream_model_1.default.getAll();
+    const dreams = dream_model_1.default.getAll(userId);
     res.json(dreams);
 };
 const getDreamById = (req, res) => {

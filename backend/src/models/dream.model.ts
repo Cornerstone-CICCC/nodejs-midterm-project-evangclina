@@ -4,8 +4,9 @@ import { Dream } from "../types/dream"
 class DreamModel {
     private dreams: Dream[] = []
 
-    getAll(){
-        return this.dreams
+    getAll(userId: string){
+        const dreams = this.dreams.filter(dream => dream.userId === userId)
+        return dreams
     }
 
     findById(id: string): Dream | undefined {
@@ -37,7 +38,7 @@ class DreamModel {
     }
 
     delete(id: string, userId: string): boolean{
-        const index = this.dreams.findIndex(d => d.id === id)
+        const index = this.dreams.findIndex(d => d.id === id && d.userId === userId)
         if(index === -1) return false
         this.dreams.splice(index, 1)
         return true

@@ -5,8 +5,9 @@ class DreamModel {
     constructor() {
         this.dreams = [];
     }
-    getAll() {
-        return this.dreams;
+    getAll(userId) {
+        const dreams = this.dreams.filter(dream => dream.userId === userId);
+        return dreams;
     }
     findById(id) {
         const dream = this.dreams.find(d => d.id === id);
@@ -30,7 +31,7 @@ class DreamModel {
         return updatedDream;
     }
     delete(id, userId) {
-        const index = this.dreams.findIndex(d => d.id === id);
+        const index = this.dreams.findIndex(d => d.id === id && d.userId === userId);
         if (index === -1)
             return false;
         this.dreams.splice(index, 1);
