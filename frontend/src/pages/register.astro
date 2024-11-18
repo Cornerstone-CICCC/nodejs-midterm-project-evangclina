@@ -5,28 +5,31 @@
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
 		<title>Astro</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito:wght@200..1000&display=swap" rel="stylesheet">
 	</head>
 	<body>
-		<h1>Create an account</h1>
-        <form>
-            <label for="firstname">First Name</label>
-            <input type="text" name="firstname" id="firstname" required autocomplete="off" placeholder="First name">
-
-            <label for="lastname">Last Name</label>
-            <input type="text" name="lastname" id="lastname" required autocomplete="off" placeholder="First name">
-
-            <label for="email">Email address</label>
-            <input type="email" name="email" id="email" required placeholder="Email">
-
-            <label for="username">Username</label>
-            <input type="text" name="username" id="username" required autocomplete="off" placeholder="Username">
-
-            <label for="password">Password</label>
-            <input type="password" name="password" id="password" required autocomplete="off" placeholder="Password">
+        <div class="container-register">
+            <img src="/assets/moon.png" alt="moon logo">
+            <div class="div-form">
+                <form>
+                    
+                    <input type="text" name="firstname" id="firstname" required autocomplete="off" placeholder="first name">
         
-            <button>Create account</button>
-        </form>
-        <p>Already have an account? <a href="/login">log in</a></p>
+                    <input type="text" name="lastname" id="lastname" required autocomplete="off" placeholder="last name">
+        
+                    <input type="email" name="email" id="email" required placeholder="email">
+        
+                    <input type="text" name="username" id="username" required autocomplete="off" placeholder="username">
+        
+                    <input type="password" name="password" id="password" required autocomplete="off" placeholder="password">
+                
+                    <button>sign up</button>
+                </form>
+            </div>
+            <p>already have an account? <a href="/login">log in</a></p>
+        </div>
         <script>
             const form = document.querySelector("form") as HTMLFormElement
 
@@ -55,3 +58,93 @@
         </script>
 	</body>
 </html>
+
+<style>
+    input{ 
+        height: 80px;
+        border-radius: 50px;
+        width: 250px;
+        font-family: "Montserrat", sans-serif;
+        text-align: center;
+        height: 30px;
+        border: none;
+        font-size: 15px;
+    }
+    body{
+        font-family: "Montserrat", sans-serif;
+        background: rgb(56,42,117);
+        background: linear-gradient(rgba(56,42,117,1) 25%, rgba(184,194,240,1) 100%);
+        background-repeat: no-repeat;
+        background-size: cover;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+    }
+    button{
+        width: 100px;
+		height: 40px; 
+		border-radius: 50px;
+		font-family: "Montserrat", sans-serif;
+		font-weight: 700;
+		color: #5221a7;
+		font-size: 15px;
+		background-color: #dae0e8;
+		transition: all .3s ease-in-out;
+		border: .5px solid #5221a7;
+	}
+    form{
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        justify-content: center;
+        width: 200px;
+        align-items: center;
+    }
+    .div-form{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    h1{
+        color: aliceblue;
+        text-align: center;
+        font-size: 25px;
+    }
+    p{
+        font-size: 13px;
+        color:white;
+        text-align: center;
+    }
+    a{
+        color: white;
+    }
+    .container-register{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+    }
+    img{
+        max-width: 80px;
+        margin-bottom: 20px;
+        animation: float 3s ease-in-out infinite;
+    }
+    a:hover{
+        cursor: pointer;
+    }
+    button:hover{
+        cursor:pointer;
+    }
+    @keyframes float {
+        0% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+        100% {
+            transform: translateY(0);
+        }
+    }
+</style>

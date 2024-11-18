@@ -1,4 +1,7 @@
 /* PROFILE MODAL */
+*{
+    box-sizing: border-box;
+}
 .overlay{
     position: fixed;
     top: 0;
@@ -8,6 +11,7 @@
     width: 100vw;
     height: 100vh;
     background-color: rgba(0,0,0,.8);
+    z-index: 1000000000;
 }
 
 .modal {
@@ -22,13 +26,181 @@
     text-align: justify;
     border-radius: 10px;
 }
+.edit-form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.edit-form label{
+    font-family: "Montserrat", sans-serif;
+    font-weight: 700;
+    color:#382a75;
+    text-align: center;
+}
+.edit-form div{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.edit-form textarea{
+    height: 150px;
+    width: 250px;
+    border-radius: 10px;
+    border: .5px solid #382a75;
+    font-size: 15px;
+    font-family: "Montserrat", sans-serif;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+.edit-form input{
+    height: 80px;
+    border-radius: 50px;
+    width: 250px;
+    font-family: "Montserrat", sans-serif;
+    text-align: center;
+    height: 30px;
+    border: .5px solid #382a75;
+    font-size: 15px;
+    margin-bottom: 15px;
+}
+
+.edit-form button{
+    width: 150px;
+	height: 40px; 
+	border-radius: 50px;
+	font-family: "Montserrat", sans-serif;
+	font-weight: 700;
+	color: #5221a7;
+	font-size: 15px;
+	background-color: #dae0e8;
+	transition: all .3s ease-in-out;
+	border: .5px solid #5221a7;
+}
 
 .close-btn {
     position: absolute;
     top: 5px;
     right: 5px;
 }
+.close{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
 
 .dream{
-    border: 1px solid #bbb;
+    padding: 15px 25px;
+    background-color: rgb(246, 246, 246);
+    border-radius: 10px;
+    position: relative;
+}
+
+.menu{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.date{
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: 5px;
+    font-size: 13px;
+}
+
+.menu-content{
+    position: absolute;
+    top: 60px;
+    right: 35px; 
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    background-color: white;
+    border: .5px solid #382a75;
+    width: 120px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.delete-btn, .edit-btn{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 10px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 15px;
+    background-color: none;
+}
+
+.delete-btn p, .edit-btn p {
+    margin: 0;
+}
+
+.hidden{
+    display: none;
+}
+
+.delete-title{
+    font-family: "Montserrat", sans-serif;
+}
+.delete-title h4{
+    color:#382a75;
+}
+.delete-title p {
+    font-size: 13px;
+    color: grey;
+    padding: 0 8px;
+}
+
+.confirmation-buttons{
+    display: flex;
+    align-items: end;
+    justify-content: end;
+    gap: 10px;
+}
+.confirmation-buttons button{
+    width: 80px;
+	height: 40px; 
+	border-radius: 50px;
+	font-family: "Montserrat", sans-serif;
+	font-weight: 700;
+	color: #5221a7;
+	font-size: 15px;
+	background-color: #dae0e8;
+	transition: all .3s ease-in-out;
+	border: .5px solid #5221a7;
+}
+.close-btn-4{
+    position:absolute;
+    top: 5px; 
+    right: 25px;
+}
+.close-btn-5{
+    position:absolute;
+    top: 5px; 
+    right: 5px;
+}
+.search-div h4{
+    color: #382a75;
+}
+
+.close-btn-5:hover, .add-btn:hover, .search-btn:hover, .logout-btn:hover ,.delete-btn:hover, .edit-btn:hover, .close-btn:hover, .close:hover, .close-btn-4:hover, .dot-menu:hover{
+    cursor: pointer;
+}
+.dream-title{
+    transition: all .5s ease-in-out;
+}
+.dream-title:hover{
+    cursor: pointer;
+    text-decoration: underline; 
+}
+
+
+@media only screen and (min-width: 1200px) {
+    .search-div{
+        max-width: 800px;
+        margin: auto;
+        border-radius: 10px;
+    }
 }
