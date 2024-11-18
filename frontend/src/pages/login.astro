@@ -1,0 +1,132 @@
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito:wght@200..1000&display=swap" rel="stylesheet">
+	</head>
+	<body>
+        <div class="container-login">
+            <img src="/assets/moon.png" alt="moon logo">
+            <form>
+                <input type="text" name="username" id="username" required autocomplete="off" placeholder="username">
+
+                <input type="password" name="password" id="password" required autocomplete="off" placeholder="password">
+            
+                <button>log in</button>
+            </form>
+            <p>don't have an account? <a href="/register">sign up</a></p>
+        </div>
+	</body>
+
+    <script>
+        const form = document.querySelector("form") as HTMLFormElement
+
+        form.addEventListener("submit", async(e) => {
+            e.preventDefault()
+            const formData = new FormData(form)
+
+            const username = formData.get("username")
+            const password = formData.get("password")
+
+            const res = await fetch(`http://localhost:4100/users/login`, {
+            method: "POST", 
+                headers: {
+					"Content-Type": 'application/json',
+				},
+				body: JSON.stringify({
+					"username": username,
+					"password": password
+				}),
+				credentials: 'include'
+            })
+            const data = await res.json()
+            if(res.ok){
+                window.location.href = "/profile"
+            }
+        })
+    </script>
+</html>
+
+<style>
+    body{
+        font-family: "Montserrat", sans-serif;
+        background: rgb(56,42,117);
+        background: linear-gradient(rgba(56,42,117,1) 25%, rgba(184,194,240,1) 100%);
+        background-repeat: no-repeat;
+        background-size: cover;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+    }
+    button{
+        width: 100px;
+		height: 40px; 
+		border-radius: 50px;
+		font-family: "Montserrat", sans-serif;
+		font-weight: 700;
+		color: #5221a7;
+		font-size: 15px;
+		background-color: #dae0e8;
+		transition: all .3s ease-in-out;
+		border: .5px solid #5221a7;
+	}
+    input{ 
+        height: 80px;
+        border-radius: 50px;
+        width: 250px;
+        font-family: "Montserrat", sans-serif;
+        text-align: center;
+        height: 30px;
+        border: none;
+        font-size: 15px;
+    }
+    p{
+        font-size: 13px;
+        color:white;
+        text-align: center;
+    }
+    a{
+        color: white;
+    }
+    form{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+    }
+    img{
+        max-width: 80px;
+        margin-bottom: 20px;
+        animation: float 3s ease-in-out infinite;
+    }
+    a:hover{
+        cursor: pointer;
+    }
+    button:hover{
+        cursor:pointer;
+    }
+    @keyframes float {
+        0% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+        100% {
+            transform: translateY(0);
+        }
+    }
+    .container-login{
+        height: 100vh; 
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+</style>

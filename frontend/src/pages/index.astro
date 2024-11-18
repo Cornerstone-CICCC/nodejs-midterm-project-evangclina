@@ -1,0 +1,76 @@
+---
+
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito:wght@200..1000&display=swap" rel="stylesheet">
+	</head>
+	<body>
+		<div class="buttons">
+			<img src="/assets/moon.png" alt="">
+			<a href="/login"><button class="login">log in</button></a>
+			<a href="/register"><button class="signup">sign up</button></a>
+		</div>
+	</body>
+</html>
+<style>
+	button{
+		height: 40px; 
+		width: 150px;
+		border-radius: 50px;
+		font-family: "Montserrat", sans-serif;
+		font-weight: 700;
+		color: #5221a7;
+		font-size: 15px;
+		background-color: #dae0e8;
+		transition: all .3s ease-in-out;
+		border: .5px solid #5221a7;
+	}
+	button:hover{
+		background-color: #5221a7;
+		color: #dae0e8;
+		cursor: pointer;
+	}
+	.buttons{
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		height: 100vh;
+		gap: 30px;
+		/* background-image: url("../public/assets/backg.jpg"); */
+		background: rgb(56,42,117);
+		background: linear-gradient(rgba(56,42,117,1) 25%, rgba(184,194,240,1) 100%);
+		/* background: rgb(2,0,36);
+		background: linear-gradient(rgba(2,0,36,1) 0%, rgba(70,68,144,1) 99%); */
+		
+	}
+	body{
+		margin: 0;
+	}
+	img{
+		max-width: 170px;
+		rotate: -10deg;
+		animation: float 3s ease-in-out infinite;
+
+	}
+	@keyframes float {
+        0% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-20px);
+        }
+        100% {
+            transform: translateY(0);
+        }
+    }
+</style>

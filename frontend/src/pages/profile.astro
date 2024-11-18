@@ -1,0 +1,486 @@
+---
+import "../styles/global.css"
+---
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro</title>
+	</head>
+	<body>
+		<div class="container hidden">
+            <header>
+                <nav>
+                    <!-- <button class="logout-btn"></button> -->
+                    <svg class="logout-btn" xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#b8c2f0"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/></svg>
+                </nav>
+            </header>
+            <main>
+                <form class="search-form">
+                    <input type="search" class="search-input">
+                    <svg class="search-btn" xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#b8c2f0"><path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/></svg>
+                </form>
+                <div class="search-div hidden">
+
+                </div>
+                
+                <button class="add-btn"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ffff"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg></button>
+
+                <div class="dreams">
+                    <!-- All dreams logged will be here -->
+                </div>
+
+                <div class="overlay hidden">
+                    <div class="modal">
+                        <form class="dream-form">
+                            <h3>What was your dream about?</h3>
+                            <input type="text" name="title" id="title" required autocomplete="off" placeholder="title">
+                            <textarea name="content" id="content" required autocomplete="off" placeholder="description"></textarea>
+                            <input type="date" name="date" id="date" required>
+
+                            <button>log dream</button>
+                        </form>
+                        <svg class="close-btn" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#382a75"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                    </div>
+                </div>
+            </main>
+            <style>
+                .hidden {
+                  display: none;
+                }
+            </style>
+        </div>
+        <script>
+
+            const addBtn = document.querySelector(".add-btn") as HTMLButtonElement
+            const container = document.querySelector(".container") as HTMLDivElement
+            const logoutBtn = document.querySelector(".logout-btn") as HTMLButtonElement
+            const overlay = document.querySelector(".overlay") as HTMLDivElement
+            const contentDiv = document.querySelector(".dreams") as HTMLDivElement
+            const form = document.querySelector(".dream-form") as HTMLFormElement
+
+            logoutBtn.addEventListener("click", async(e) => {
+                await fetch(`http://localhost:4100/users/logout`, {
+                    credentials: 'include'
+                })
+                window.location.href = "/"
+            })
+
+            type Dream = {
+                id: string, 
+                title: string, 
+                content: string,
+                date: string, 
+                userId: string
+            }
+
+            const fetchDreams = async (): Promise<[]> => {
+                const res = await fetch(`http://localhost:4100/dreams`, {
+                    credentials: 'include'
+                })
+                const data = await res.json()
+                return data
+            }
+
+            const buildList = async(): Promise<void> => {
+                const dreams: Dream[] = await fetchDreams()
+                contentDiv.innerHTML = ""
+                dreams.forEach(dream => {
+                    const dr = document.createElement("div")
+                    dr.classList.add("dream")
+                    dr.innerHTML= `
+                        <div class="menu">
+                            <h3 class="dream-title">${dream.title}</h3>
+                            <svg class="dot-menu" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#382a75"><path d="M240-400q-33 0-56.5-23.5T160-480q0-33 23.5-56.5T240-560q33 0 56.5 23.5T320-480q0 33-23.5 56.5T240-400Zm240 0q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm240 0q-33 0-56.5-23.5T640-480q0-33 23.5-56.5T720-560q33 0 56.5 23.5T800-480q0 33-23.5 56.5T720-400Z"/></svg>
+                        </div>    
+                        <div class="dream-data">
+                            <p>${dream.content}</p>
+                        </div>
+                        <div class="date">
+                            <p>date posted:</p>
+                            <p>${dream.date}</p>
+                        </div>
+
+                        <div class="menu-content">
+                            <div class="delete-btn">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#382a75"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
+                                <p>delete</p>
+                            </div>
+                            <div class="edit-btn">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#382a75"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
+                                <p>edit</p>
+                            </div>
+                        </div>
+                    `
+                    contentDiv.appendChild(dr)
+                    
+                    const dotmenu = dr.querySelector(".dot-menu") as HTMLImageElement
+                    const menuContent = dr.querySelector(".menu-content") as HTMLDivElement
+
+                    dotmenu.addEventListener("click", () =>{
+                        menuContent.style.display = "flex"
+                    })
+                    const title = dr.querySelector(".dream-title") as HTMLHeadingElement
+
+
+                    title.addEventListener("click", () => {
+                        const overlay = document.createElement("div")
+                        overlay.classList.add("overlay")
+
+                        overlay.innerHTML= `
+                            <div class="modal">
+                                <div class="menu">
+                                    <h3>${dream.title}</h3>
+                                </div>    
+                                <div class="dream-data">
+                                    <p>${dream.content}</p>
+                                </div>
+                                <div class="date">
+                                    <p>date posted:</p>
+                                    <p>${dream.date}</p>
+                                </div>
+                                <svg class="close-btn-5" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#382a75"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                            </div>
+                        `
+
+                        container.append(overlay)
+                        const close5 = overlay.querySelector(".close-btn-5") as HTMLButtonElement
+                        close5.addEventListener("click", () =>{
+                            overlay.remove()
+                        })
+                        
+                    })
+                    const deleteBtn = dr.querySelector(".delete-btn") as HTMLButtonElement
+                    const editBtn = dr.querySelector(".edit-btn") as HTMLButtonElement
+
+                    deleteBtn.addEventListener("click", async(e) => {
+                        const overlay = document.createElement("div")
+                        overlay.classList.add("overlay")
+                        // overlay.classList.remove("hidden")
+                        overlay.innerHTML = `
+                            <div class="modal">
+                            <div class="delete-title">
+                                <h4>Are you sure you want to delete "${dream.title}"?</h4>
+                                <p>this dream will be deleted immediately. You can't undo this action</p>
+                            </div>
+                            <div class="confirmation-buttons">
+                                <button class="cancel-btn">cancel</button>
+                                <button class="delete-btn-confirm">delete</button>
+                            </div>
+                            </div>
+                        `
+                        container.append(overlay)
+                        const yesBtn = overlay.querySelector(".cancel-btn") as HTMLButtonElement
+                        const deleteConfirmation = overlay.querySelector(".delete-btn-confirm") as HTMLButtonElement
+
+                        deleteConfirmation.addEventListener("click", async() => {
+                            const res = await fetch(`http://localhost:4100/dreams/delete/${dream.id}`, {
+                            method: "DELETE", 
+                            credentials: "include"
+                            })
+                            if(res.ok){
+                                dr.remove()
+                                overlay.remove()
+                                menuContent.style.display = "none"
+                            }
+                        })
+                        yesBtn.addEventListener("click", () => {
+                            overlay.remove()
+                            menuContent.style.display = "none"
+                        })
+
+                    })
+
+                    editBtn.addEventListener("click", async(e) => {
+                        const overlay = document.createElement("div")
+                        overlay.classList.add("overlay")
+                        overlay.classList.remove("hidden")
+                        overlay.innerHTML= `
+                            <div class="modal">
+                                <form class="edit-form">
+                                    <div>
+                                        <label for="title">new title</label>
+                                        <input value="${dream.title}" type="text" name="title" id="title">
+                                    </div>
+                                    <div>
+                                        <label for="content">new content</label>
+                                        <textarea value="${dream.content}" name="content" id="content"></textarea>
+                                    </div>
+                                    <div>
+                                        <label for="date">new date</label>
+                                        <input type="date" value="${dream.date}" name="date" id="date">
+                                    </div>
+                                    <button>save changes</button>
+                                    <svg class="close" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#382a75"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                                </form>
+                            </div>
+                        `
+                        container.append(overlay)
+                        const closeBtnEdit = overlay.querySelector(".close") as HTMLButtonElement
+                        const editForm = overlay.querySelector(".edit-form") as HTMLFormElement
+                        closeBtnEdit.addEventListener("click", () => {
+                            overlay.classList.add("hidden")
+                            menuContent.style.display = "none"
+                        })
+                        editForm.addEventListener("submit", async(e) => {
+                            // e.preventDefault()
+                            const formData = new FormData(editForm)
+                            const res = await fetch(`http://localhost:4100/dreams/update/${dream.id}`, {
+                                method: "PUT", 
+                                credentials: "include", 
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify({
+                                    title: formData.get("title"), 
+                                    content: formData.get("content"),
+                                    date: formData.get("date")
+                                })
+                            })
+                            const data = await res.json()
+                            console.log(data)
+                        })
+                    })
+                
+                })
+            }
+
+            addBtn.addEventListener("click", (e) => {
+                overlay.classList.remove("hidden")
+                const closeBtn = document.querySelector(".close-btn") as HTMLButtonElement
+                closeBtn.addEventListener("click", () => {
+                    overlay.classList.add("hidden")
+                })
+            })
+
+            form.addEventListener("submit", async(e) => {
+                // e.preventDefault()
+                const formData = new FormData(form)
+                const res = await fetch(`http://localhost:4100/dreams/add`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }, 
+                    credentials: "include", 
+                    body: JSON.stringify({
+                        title: formData.get("title"), 
+                        content: formData.get("content"), 
+                        date: formData.get("date")
+                    })
+                })
+                const data = await res.json()
+                buildList()
+            })
+
+            const loadProfile = async (): Promise<void> => {
+                const res = await fetch(`http://localhost:4100/users/profile`, {
+                    credentials: 'include'
+                })
+                const data = await res.json()
+                if (res.ok) {
+                    container.classList.remove('hidden')
+                    buildList()
+                } else {
+                    window.location.href = "/"
+                }
+            }
+
+            const searchInput = document.querySelector(".search-input") as HTMLInputElement
+            const searchBtn = document.querySelector(".search-btn") as HTMLButtonElement
+            const searchDiv = document.querySelector(".search-div") as HTMLDivElement
+            //implement search
+            const search = async() => {
+                const dreams: Dream[] = await fetchDreams()
+
+                searchBtn.addEventListener("click", () => {
+                    let value = searchInput.value
+                    console.log(value)
+                    if(value.trim()){
+                        dreams.forEach((dream) => {
+                            if(dream.title.includes(value)){
+                                searchDiv.innerHTML = `
+                                    <h4>Results for: "${value.trim()}"</h4>
+                                    <svg class="close-btn-4" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#382a75"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                                `
+                                const dr = document.createElement("div")
+                                dr.classList.add("dream")
+                                dr.innerHTML = `
+                                    <div class="menu">
+                                        <h3>${dream.title}</h3>
+                                        <svg class="dot-menu" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#382a75"><path d="M240-400q-33 0-56.5-23.5T160-480q0-33 23.5-56.5T240-560q33 0 56.5 23.5T320-480q0 33-23.5 56.5T240-400Zm240 0q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm240 0q-33 0-56.5-23.5T640-480q0-33 23.5-56.5T720-560q33 0 56.5 23.5T800-480q0 33-23.5 56.5T720-400Z"/></svg>
+                                    </div>    
+                                    <div class="dream-data">
+                                        <p>${dream.content}</p>
+                                    </div>
+                                    <div class="date">
+                                        <p>date posted:</p>
+                                        <p>${dream.date}</p>
+                                    </div>
+
+                                    <div class="menu-content">
+                                        <div class="delete-btn">
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#382a75"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
+                                            <p>delete</p>
+                                        </div>
+                                        <div class="edit-btn">
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#382a75"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
+                                            <p>edit</p>
+                                        </div>
+                                    </div>
+                                `
+                                searchDiv.classList.remove("hidden")
+                                searchDiv.appendChild(dr)
+
+                                const newClose = searchDiv.querySelector(".close-btn-4") as HTMLButtonElement
+
+                                newClose.addEventListener("click", () => {
+                                    searchDiv.classList.add("hidden")
+                                })
+                            }else{
+                                searchDiv.innerHTML = `
+                                    <h4>No search results for: "${value.trim()}"</h4>
+                                    <svg class="close-btn-4" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#382a75"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                                `
+                                searchDiv.classList.remove("hidden")
+                                const newClose = searchDiv.querySelector(".close-btn-4") as HTMLButtonElement
+
+                                newClose.addEventListener("click", () => {
+                                    searchDiv.classList.add("hidden")
+                                })
+                            }
+                        })
+                    }
+                })
+
+            }
+            search()
+            loadProfile()
+        </script>
+	</body>
+</html>
+
+<style>
+    .search-div{
+        padding: 20px 25px;
+        margin-bottom: 30px;
+        position: relative;
+        background-color: #dae0e8;
+    }
+    .add-btn{
+        position: fixed; 
+        bottom: 10px; 
+        right: 10px;
+        height: 50px;
+        width: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #382a75;
+        border: none;
+        z-index: 1000;
+    }
+    body{
+        font-family: "Montserrat", sans-serif;
+        background: rgb(56,42,117);
+        background: linear-gradient(rgba(56,42,117,1) 25%, rgba(184,194,240,1) 100%);
+        background-repeat: no-repeat;
+        background-size: cover;
+        margin: 0;
+        padding: 0;
+    }
+    nav{
+        display: flex;
+        justify-content: end;
+        align-items: end;
+        padding: 10px 10px 0 0;
+        margin-bottom: 30px;
+    }
+    .search-form{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 20px;
+    }
+    .search-input{
+        height: 80px;
+        border-radius: 50px;
+        width: 250px;
+        font-family: "Montserrat", sans-serif;
+        text-align: center;
+        height: 30px;
+        border: none;
+        font-size: 15px;
+    }
+    .dreams{
+        display: flex;
+        flex-direction: column;
+        gap: 10px; 
+        padding: 0 23px;
+        
+    }
+
+    .dream-form{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .dream-form input{
+        height: 80px;
+        border-radius: 50px;
+        width: 250px;
+        font-family: "Montserrat", sans-serif;
+        text-align: center;
+        height: 30px;
+        border: .5px solid #382a75;
+        font-size: 15px;
+        font-family: "Montserrat", sans-serif;
+        margin-bottom: 15px;
+    }
+    .dream-form textarea{
+        height: 150px;
+        margin-bottom: 15px;
+        width: 250px;
+        border-radius: 10px;
+        border: .5px solid #382a75;
+        font-size: 15px;
+        font-family: "Montserrat", sans-serif;
+        padding: 10px;
+    }
+    .dream-form button{
+        width: 100px;
+		height: 40px; 
+		border-radius: 50px;
+		font-family: "Montserrat", sans-serif;
+		font-weight: 700;
+		color: #5221a7;
+		font-size: 15px;
+		background-color: #dae0e8;
+		transition: all .3s ease-in-out;
+		border: .5px solid #5221a7;
+    }
+    *{
+        box-sizing: border-box;
+    }
+
+    .dream-form h3{
+        color: #382a75;
+    }
+
+
+    @media only screen and (min-width: 1200px) {
+        .container{
+            max-width: 1000px;
+            margin: auto;
+        }
+        .dreams{
+            max-width: 800px;
+
+            margin: auto;
+        }
+    }
+</style>
