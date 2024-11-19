@@ -20,9 +20,7 @@ import "../styles/global.css"
             <main>
                 <form class="search-form">
                     <input type="search" class="search-input">
-                    <button type="submit">
-                        <svg class="search-btn" xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#b8c2f0"><path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/></svg>    
-                    </button>
+                    <button class="search-btn" type="submit"></button>
                 </form>
 
                 <div class="search-div hidden">
@@ -56,7 +54,6 @@ import "../styles/global.css"
             </style>
         </div>
         <script>
-
             const addBtn = document.querySelector(".add-btn") as HTMLButtonElement
             const container = document.querySelector(".container") as HTMLDivElement
             const logoutBtn = document.querySelector(".logout-btn") as HTMLButtonElement
@@ -258,6 +255,7 @@ import "../styles/global.css"
                 })
             })
 
+            //add button form 
             form.addEventListener("submit", async(e) => {
                 // e.preventDefault()
                 const formData = new FormData(form)
@@ -292,7 +290,6 @@ import "../styles/global.css"
 
             const searchForm = document.querySelector(".search-form") as HTMLFormElement
             const searchInput = document.querySelector(".search-input") as HTMLInputElement
-            const searchBtn = document.querySelector(".search-btn") as HTMLButtonElement
             const searchDiv = document.querySelector(".search-div") as HTMLDivElement
             //implement search
 
@@ -300,26 +297,36 @@ import "../styles/global.css"
             const search = async() => {
                 dreams = await fetchDreams()
             }
-            searchForm.addEventListener("submit", (e) => {
+            searchForm.addEventListener("submit", async(e) => {
                 e.preventDefault()
-                    let value = searchInput.value
-                    console.log(value)
-                    if(value.trim()){
-                        console.log(1)
-                        dreams.forEach((dream) => {
-                            if(dream.title.includes(value)){
-                                console.log(2)
-                                console.log(dream)
-                                searchDiv.innerHTML = `
-                                    <h4>Results for: "${value.trim()}"</h4>
-                                    <svg class="close-btn-4" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#382a75"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
-                                `
-                                const dr = document.createElement("div")
-                                dr.classList.add("dream")
-                                dr.innerHTML = `
+                let value = searchInput.value
+                if(value.trim()){
+                    const foundDreams = dreams.filter(dream => dream.title.includes(value))
+                    if(foundDreams.length === 0){
+                        searchDiv.innerHTML = `
+                            <h4>No search results for: "${value.trim()}"</h4>
+                            <svg class="close-btn-4" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#382a75"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                            `
+                        searchDiv.classList.remove("hidden")
+                        const newClose = searchDiv.querySelector(".close-btn-4") as HTMLButtonElement
+                        
+                        newClose.addEventListener("click", () => {
+                            console.log(3)
+                            searchDiv.classList.add("hidden")
+                        })
+                    }
+                    searchDiv.innerHTML = `
+                        <h4>Results for: "${value.trim()}"</h4>
+                            <svg class="close-btn-4" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#382a75"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                    `
+                    searchDiv.classList.remove("hidden")
+                    foundDreams.forEach(dream => {
+                        const dr = document.createElement("div")
+                        dr.classList.add("dream")
+                        dr.classList.add("space")
+                        dr.innerHTML = `
                                     <div class="menu">
                                         <h3>${dream.title}</h3>
-                                        <svg class="dot-menu" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#382a75"><path d="M240-400q-33 0-56.5-23.5T160-480q0-33 23.5-56.5T240-560q33 0 56.5 23.5T320-480q0 33-23.5 56.5T240-400Zm240 0q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm240 0q-33 0-56.5-23.5T640-480q0-33 23.5-56.5T720-560q33 0 56.5 23.5T800-480q0 33-23.5 56.5T720-400Z"/></svg>
                                     </div>    
                                     <div class="dream-data">
                                         <p>${dream.content}</p>
@@ -339,30 +346,15 @@ import "../styles/global.css"
                                             <p>edit</p>
                                         </div>
                                     </div>
-                                `
-                                searchDiv.classList.remove("hidden")
-                                searchDiv.appendChild(dr)
+                        `
+                        searchDiv.appendChild(dr)
 
-                                const newClose = searchDiv.querySelector(".close-btn-4") as HTMLButtonElement
-
-                                newClose.addEventListener("click", () => {
-                                    searchDiv.classList.add("hidden")
-                                })
-                            }else{
-                                console.log(3)
-                                searchDiv.innerHTML = `
-                                    <h4>No search results for: "${value.trim()}"</h4>
-                                    <svg class="close-btn-4" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#382a75"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
-                                `
-                                searchDiv.classList.remove("hidden")
-                                const newClose = searchDiv.querySelector(".close-btn-4") as HTMLButtonElement
-
-                                newClose.addEventListener("click", () => {
-                                    searchDiv.classList.add("hidden")
-                                })
-                            }
+                        const newClose = searchDiv.querySelector(".close-btn-4") as HTMLButtonElement
+                        newClose.addEventListener("click", () => {
+                            searchDiv.classList.add("hidden")
                         })
-                    }
+                    })
+                }
             })
             search()
             loadProfile()
@@ -371,6 +363,14 @@ import "../styles/global.css"
 </html>
 
 <style>
+    .search-btn{
+        background-image: url(/assets/search.png);
+        background-size: cover;
+        height: 30px; 
+        width: 30px;
+        border: none;
+        background-color: transparent;
+    }
     .search-div{
         padding: 20px 25px;
         margin-bottom: 30px;
@@ -482,7 +482,7 @@ import "../styles/global.css"
     }
 
 
-    @media only screen and (min-width: 1200px) {
+    @media only screen and (min-width: 820px) {
         .container{
             max-width: 1000px;
             margin: auto;
